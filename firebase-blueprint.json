@@ -1,0 +1,78 @@
+{
+  "entities": {
+    "analytics": {
+      "title": "Analytics Event",
+      "description": "Interaction logging",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "cardId": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "type": { "type": "string", "enum": ["view", "save", "link_click"] },
+        "target": { "type": "string" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["cardId", "ownerId", "type", "timestamp"]
+    },
+    "cards": {
+      "title": "Business Card",
+      "description": "Digital business card data",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "organization": { "type": "string" },
+        "title": { "type": "string" },
+        "bio": { "type": "string" },
+        "image": { "type": "string" },
+        "logo": { "type": "string" },
+        "logoType": { "type": "string", "enum": ["image", "color"] },
+        "logoColor": { "type": "string" },
+        "phones": { "type": "array", "items": { "type": "string" } },
+        "emails": { "type": "array", "items": { "type": "string" } },
+        "website": { "type": "string" },
+        "location": { "type": "string" },
+        "qrLink": { "type": "string" },
+        "socialLinks": { "type": "array" },
+        "customLinks": { "type": "array" },
+        "portfolio": { "type": "string" },
+        "colors": { "type": "object" },
+        "stats": { "type": "object" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["userId", "name", "createdAt"]
+    },
+    "users": {
+        "title": "User Profile",
+        "description": "User account data",
+        "type": "object",
+        "properties": {
+            "uid": { "type": "string" },
+            "email": { "type": "string" },
+            "displayName": { "type": "string" },
+            "createdAt": { "type": "number" }
+        },
+        "required": ["uid", "email"]
+    }
+  },
+  "firestore": {
+    "/cards/{cardId}": {
+      "schema": "cards",
+      "description": "Public and private card data"
+    },
+    "/users/{userId}": {
+      "schema": "users",
+      "description": "User metadata"
+    },
+    "/analytics/{eventId}": {
+      "schema": "analytics",
+      "description": "Timestamped interaction events"
+    },
+    "/admins/{userId}": {
+      "schema": "users",
+      "description": "Admin users list"
+    }
+  }
+}

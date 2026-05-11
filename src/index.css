@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --breakpoint-xs: 375px;
+}
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  @keyframes order-pop {
+    0%   { transform: scale(1) rotate(-1deg); }
+    25%  { transform: scale(1.05) rotate(1deg); }
+    50%  { transform: scale(1.08) rotate(-1.5deg); }
+    75%  { transform: scale(1.04) rotate(0.5deg); }
+    100% { transform: scale(1) rotate(-1deg); }
+  }
+
+  .animate-order-pop {
+    animation: order-pop 1.5s infinite cubic-bezier(.22,1,.36,1);
+  }
+
+  /* Image Download Helpers */
+  .download-only {
+    display: none;
+  }
+  
+  .downloading .download-only {
+    display: block !important;
+  }
+  
+  .downloading .download-exclude {
+    display: none !important;
+  }
+  
+  .downloading {
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .downloading .relative.z-10 {
+    padding-top: 14rem !important;
+  }
+}

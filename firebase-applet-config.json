@@ -1,0 +1,11 @@
+{
+  "apiKey": "AIzaSyAXWv2I0vDHwmhQVSe9ummW4NFkbPSgWvM",
+  "authDomain": "lomi-smart-card.firebaseapp.com",
+  "projectId": "lomi-smart-card",
+  "storageBucket": "lomi-smart-card.firebasestorage.app",
+  "messagingSenderId": "289807012389",
+  "appId": "1:289807012389:web:095afbaf0be1d0390f65cc",
+  "measurementId": "G-YY97G59MNF",
+  "databaseURL": "https://lomi-smart-card-default-rtdb.firebaseio.com",
+  "firestoreDatabaseId": "(default)"
+}

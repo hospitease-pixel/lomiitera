@@ -1,0 +1,37 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Global Helper: Check if file is image or PDF
+    function isValidType() {
+      return request.resource.contentType != null && (
+        request.resource.contentType.matches('image/.*') || 
+        request.resource.contentType == 'application/pdf' ||
+        request.resource.contentType == 'application/x-pdf'
+      );
+    }
+    
+    // Global Helper: Check if user is authenticated and owns the folder
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    // User Specific Uploads (Profile, Logo, Portfolio)
+    match /user_uploads/{uid}/{allPaths=**} {
+      // allow read: Digital cards are public, so uploads must be too
+      allow read: if true;
+      
+      // allow write: Restricted to the owner. Validates size and type.
+      allow write, delete: if isOwner(uid) &&
+                    (request.resource == null || (
+                      isValidType() && 
+                      request.resource.size < 10 * 1024 * 1024
+                    ));
+    }
+    
+    // Default Deny
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

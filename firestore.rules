@@ -1,0 +1,102 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Primitive Helpers
+    function isSignedIn() { return request.auth != null; }
+    function isVerified() { return isSignedIn() && request.auth.token.get('email_verified', false) == true; }
+    function isOwner(uid) { return isSignedIn() && request.auth.uid == uid; }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    
+    function isAdmin() { 
+      let email = request.auth.token.get('email', '').lower();
+      let uid = request.auth.uid;
+      return isSignedIn() && (
+        uid == "LVhHe8CJHLfk84U3BrXnt24DqUA2" ||
+        uid == "oL5jG3O7sjYQLboGd5oN72HKIAs1" ||
+        uid == "FDOB2R2kqSW9XUSAxWNZ7bpLgtJ3" ||
+        email == "sofoniasgenanaw12@gmail.com" ||
+        email == "sofidigital08@gmail.com" ||
+        email == "hospitease@gmail.com" ||
+        exists(/databases/$(database)/documents/admins/$(uid)) ||
+        exists(/databases/$(database)/documents/Admin/$(uid))
+      );
+    }
+    
+    // 0. EMERGENCY ADMIN BYPASS
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
+
+    // 2. Admins Collections
+    match /admins/{adminId} {
+      allow read: if isSignedIn() && (request.auth.uid == adminId || isAdmin());
+      allow write: if isAdmin();
+    }
+    match /Admin/{adminId} {
+      allow read: if isSignedIn() && (request.auth.uid == adminId || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    // 3. Users Collection
+    match /users/{userId} {
+      allow get: if isSignedIn();
+      allow create, update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // 4. Cards Collection
+    function isValidCard(data, isNew) {
+      return 
+        (!isNew || (data.keys().hasAll(['userId', 'name', 'title', 'organization', 'createdAt', 'updatedAt']) && data.keys().size() >= 6)) &&
+        (!data.keys().hasAny(['name']) || (data.name is string && data.name.size() > 0 && data.name.size() <= 150)) &&
+        (!data.keys().hasAny(['title']) || (data.title is string && data.title.size() <= 150)) &&
+        (!data.keys().hasAny(['organization']) || (data.organization is string && data.organization.size() <= 150)) &&
+        (!data.keys().hasAny(['verified']) || data.verified is bool) &&
+        (!data.keys().hasAny(['bio']) || (data.bio is string && data.bio.size() <= 2000)) &&
+        (!data.keys().hasAny(['image']) || (data.image is string && data.image.size() <= 5000)) &&
+        (!data.keys().hasAny(['logo']) || (data.logo is string && data.logo.size() <= 5000)) &&
+        (!data.keys().hasAny(['ownerEmailVerified']) || data.ownerEmailVerified is bool) &&
+        (!data.keys().hasAny(['updatedAt']) || data.updatedAt is int);
+    }
+
+    match /cards/{cardId} {
+      allow get: if true; // Public access to specific cards
+      allow list: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isVerified() && 
+                    isValidCard(incoming(), true) && 
+                    isValidId(cardId) &&
+                    (isAdmin() || incoming().userId == request.auth.uid);
+      
+      allow update: if (isAdmin()) || (
+        isSignedIn() && isOwner(existing().userId) && 
+        incoming().userId == existing().userId &&
+        isValidCard(incoming(), false) &&
+        (!incoming().keys().hasAny(['verified']) || incoming().verified == existing().verified)
+      ) || (
+        // Allow public interactions (stats updates)
+        incoming().diff(existing()).affectedKeys().hasOnly(['stats', 'updatedAt']) &&
+        incoming().stats.keys().hasAll(['views', 'clicks'])
+      );
+      
+      allow delete: if isAdmin() || (isSignedIn() && isOwner(existing().userId));
+    }
+
+    // 5. Analytics Collection
+    function isValidAnalytics(data) {
+      return data.keys().hasAll(['cardId', 'ownerId', 'type', 'timestamp']) &&
+             data.keys().size() >= 4 &&
+             data.cardId is string && data.cardId.size() <= 50 &&
+             data.ownerId is string && data.ownerId.size() <= 50 &&
+             data.type in ['view', 'click', 'share', 'link_click', 'save'] &&
+             data.timestamp is int;
+    }
+
+    match /analytics/{eventId} {
+      allow create: if true; // Public tracking
+      allow list, get: if isAdmin() || (isSignedIn() && resource.data.ownerId == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+  }
+}
