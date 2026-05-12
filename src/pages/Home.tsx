@@ -179,10 +179,14 @@ const Home: React.FC = () => {
         isDarkMode ? "bg-black/50 border-white/10" : "bg-white/80 border-black/5"
       )}>
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <Link 
+            to="/" 
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="flex items-center gap-2"
+          >
             <img src="https://i.ibb.co/zWKnJsFS/Tap-Nix-Logo-2.png" alt="TapNix Logo" className="w-10 h-10 object-contain" />
             <span className="text-2xl font-bold tracking-tighter">Tap<span className="text-yellow-400">Nix</span></span>
-          </div>
+          </Link>
           <div className={cn(
             "hidden md:flex items-center gap-8 text-sm font-medium transition-colors",
             isDarkMode ? "text-white/70" : "text-zinc-600"
@@ -227,7 +231,13 @@ const Home: React.FC = () => {
       {/* Hero Section */}
       <section className="relative pt-40 pb-20 px-6 overflow-hidden">
         {/* Tech Web Background */}
-        <TechWeb isDarkMode={isDarkMode} />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 2 }}
+        >
+          <TechWeb isDarkMode={isDarkMode} />
+        </motion.div>
         
         {/* Background Logo with overlay for visibility */}
         <div className="absolute inset-x-0 inset-y-0 z-0 flex items-center justify-center pointer-events-none overflow-hidden select-none">
@@ -251,9 +261,23 @@ const Home: React.FC = () => {
             <span className="inline-block py-1.5 px-4 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 text-sm font-bold mb-6">
               Networking 2.0 is here
             </span>
-            <h1 className="text-5xl md:text-8xl font-black tracking-tight leading-[1] mb-8 drop-shadow-2xl">
-              Business networking <br className="hidden md:block" />
-              meets <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-200">innovation.</span>
+            <h1 className="text-5xl md:text-8xl font-black tracking-tight leading-[1] mb-8 drop-shadow-2xl overflow-hidden">
+              <motion.span 
+                initial={{ x: -100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="block"
+              >
+                Business networking
+              </motion.span>
+              <motion.span 
+                initial={{ x: 100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+                className="block"
+              >
+                meets <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-200">innovation.</span>
+              </motion.span>
             </h1>
             <div className={cn(
               "backdrop-blur-sm p-6 rounded-3xl max-w-2xl mx-auto mb-10 border transition-all",
