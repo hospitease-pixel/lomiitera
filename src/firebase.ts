@@ -16,6 +16,10 @@ const firebaseConfig = {
   databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL
 };
 
+if (!firebaseConfig.apiKey) {
+  console.error("❌ Firebase API Key is missing! Ensure VITE_FIREBASE_API_KEY is set in your environment variables.");
+}
+
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
