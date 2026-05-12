@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/utils';
 import { 
@@ -167,6 +167,14 @@ const TechWeb: React.FC<{ isDarkMode: boolean }> = ({ isDarkMode }) => {
 
 const Home: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = React.useState(true);
+  const [showTapAnim, setShowTapAnim] = React.useState(false);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setShowTapAnim(prev => !prev);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <div className={cn(
@@ -713,52 +721,150 @@ const Home: React.FC = () => {
               <ChevronRight className="w-5 h-5" />
             </a>
           </div>
-          <div className="w-full md:w-80 h-96 relative group">
-            <div className="absolute inset-0 bg-yellow-400 rounded-3xl blur-2xl opacity-10 group-hover:opacity-20 transition-opacity"></div>
+          <div className="w-full md:w-[380px] h-[750px] relative group flex items-center justify-center">
+            <div className="absolute inset-x-0 inset-y-10 bg-yellow-400 rounded-[3.5rem] blur-3xl opacity-10 group-hover:opacity-20 transition-opacity"></div>
+            
+            {/* Phone Frame */}
             <motion.div 
-              animate={{ 
-                y: [0, -20, 0],
-              }}
-              transition={{ 
-                duration: 6,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
               className={cn(
-                "w-full h-full rounded-3xl border overflow-hidden flex flex-col p-6 shadow-2xl relative transition-all",
-                isDarkMode ? "bg-zinc-900 border-white/10" : "bg-zinc-100 border-zinc-200"
+                "w-full h-full rounded-[3.5rem] border-[10px] overflow-hidden flex flex-col p-6 shadow-2xl relative transition-all z-10",
+                isDarkMode ? "bg-black border-zinc-800" : "bg-white border-zinc-100"
               )}
             >
-              {/* Grab Yours Ribbon */}
-              <motion.div 
-                initial={{ x: 20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                whileHover={{ scale: 1.1, rotate: -5 }}
-                className="absolute -top-1 -right-1 z-30"
-              >
-                <div className="bg-yellow-400 text-black text-[10px] font-black px-4 py-1.5 rounded-bl-2xl rounded-tr-3xl shadow-lg border-b-2 border-black/10 uppercase tracking-tighter flex items-center gap-1.5 whitespace-nowrap">
-                  <Zap size={10} className="fill-current" />
-                  Grab yours
+              {/* Phone Status Bar Mockup */}
+              <div className="flex justify-between items-center mb-8 opacity-40 px-4">
+                <div className="text-xs font-bold">9:41</div>
+                <div className="flex gap-1.5 items-center">
+                   <Signal size={12} />
+                   <Wifi size={12} />
+                   <Battery size={14} />
                 </div>
-              </motion.div>
+              </div>
 
-              <div className="flex justify-between items-start">
-                 <Zap className="text-yellow-400" />
-                 <div className="flex flex-col items-end">
-                    <div className="w-10 h-6 bg-zinc-700 rounded mb-2"></div>
-                    <div className="w-8 h-1 bg-zinc-800 rounded"></div>
-                 </div>
+              {/* Dynamic Island */}
+              <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-7 bg-zinc-900 rounded-full z-50 flex items-center justify-around px-2 border border-white/5">
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-500/20"></div>
+                <div className="w-10 h-px bg-zinc-800 rounded-full"></div>
               </div>
-              <div className="mt-auto">
-                 <div className="w-1/2 h-4 bg-zinc-800 rounded mb-4"></div>
-                 <div className="w-3/4 h-2 bg-zinc-700/50 rounded mb-2"></div>
-                 <div className="w-2/3 h-2 bg-zinc-700/50 rounded"></div>
+
+              {/* TapNix Logo Background */}
+              <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none">
+                 <img src="https://i.ibb.co/zWKnJsFS/Tap-Nix-Logo-2.png" alt="Logo" className="w-64 h-64 object-contain grayscale" />
               </div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                 <div className="w-16 h-16 rounded-full border-2 border-yellow-400/20 flex items-center justify-center animate-ping">
-                    <div className="w-4 h-4 bg-yellow-400 rounded-full"></div>
-                 </div>
+
+              <div className="relative z-10 h-full flex flex-col">
+                <div className="flex justify-between items-start mb-4">
+                   <img src="https://i.ibb.co/zWKnJsFS/Tap-Nix-Logo-2.png" alt="Logo" className="w-10 h-10 object-contain" />
+                </div>
+
+                {/* Animated Pop-up (Sofonias Genanaw) */}
+                <AnimatePresence>
+                  {showTapAnim && (
+                    <motion.div 
+                      initial={{ scale: 0.9, opacity: 0, y: 30 }}
+                      animate={{ scale: 1, opacity: 1, y: 0 }}
+                      exit={{ scale: 0.9, opacity: 0, y: 30 }}
+                      transition={{ type: "spring", damping: 15, delay: 0.5 }}
+                      className="mt-4 p-8 bg-black rounded-[2.5rem] shadow-2xl border border-white/10 text-white flex flex-col items-center text-center"
+                    >
+                      {/* Avatar */}
+                      <div className="w-24 h-24 rounded-full bg-black border border-white/10 flex items-center justify-center mb-6 shadow-2xl p-5">
+                        <img src="https://i.ibb.co/zWKnJsFS/Tap-Nix-Logo-2.png" alt="TapNix" className="w-full h-full object-contain" />
+                      </div>
+                      
+                      <div className="mb-8">
+                        <h3 className="font-black text-2xl tracking-tighter mb-1">Sofonias Genanaw</h3>
+                        <p className="text-xs font-bold text-yellow-400 uppercase tracking-[0.2em]">Founder @ TapNix</p>
+                      </div>
+
+                      <div className="w-full space-y-3">
+                        {/* Phone Button */}
+                        <div className="h-14 bg-zinc-900 border border-white/5 rounded-2xl flex items-center px-4 gap-4">
+                          <div className="w-8 h-8 rounded-xl bg-yellow-400/10 flex items-center justify-center text-yellow-400">
+                             <Smartphone size={16} />
+                          </div>
+                          <div className="flex flex-col items-start">
+                             <span className="text-[8px] font-black text-white/40 uppercase tracking-widest">Call</span>
+                             <span className="text-sm font-bold opacity-90">+251 920 508 303</span>
+                          </div>
+                        </div>
+
+                        {/* Email Button */}
+                        <div className="h-14 bg-zinc-900 border border-white/10 rounded-2xl flex items-center px-4 gap-4">
+                          <div className="w-8 h-8 rounded-xl bg-yellow-400/10 flex items-center justify-center text-yellow-400">
+                             <Mail size={16} />
+                          </div>
+                          <div className="flex flex-col items-start truncate overflow-hidden">
+                             <span className="text-[8px] font-black text-white/40 uppercase tracking-widest">Email</span>
+                             <span className="text-xs font-bold opacity-90 truncate">sofoniasgenanaw12@gmail.com</span>
+                          </div>
+                        </div>
+
+                        {/* Save Contact Button */}
+                        <div className="h-16 bg-white text-black hover:bg-yellow-400 rounded-2xl flex items-center justify-center font-black text-sm uppercase tracking-widest mt-4 transition-colors">
+                          Save Contact
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <div className="mt-auto pb-10 flex flex-col items-center gap-6">
+                   <div className="w-32 h-1.5 bg-zinc-800 rounded-full"></div>
+                   <div className="flex gap-10 opacity-20">
+                      <div className="w-12 h-12 bg-current rounded-2xl"></div>
+                      <div className="w-12 h-12 bg-current rounded-2xl"></div>
+                      <div className="w-12 h-12 bg-current rounded-2xl"></div>
+                   </div>
+                </div>
               </div>
+
+              {/* Tap Indicator Ripple */}
+              <div className="absolute top-16 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                 <AnimatePresence>
+                    {!showTapAnim && (
+                      <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="w-24 h-24 rounded-full border-4 border-yellow-400/40 flex items-center justify-center animate-ping"
+                      >
+                         <div className="w-6 h-6 bg-yellow-400 rounded-full shadow-[0_0_20px_rgba(250,204,21,0.5)]"></div>
+                      </motion.div>
+                    )}
+                 </AnimatePresence>
+              </div>
+            </motion.div>
+
+            {/* Physical Black NFC Card with Hand simulation */}
+            <motion.div
+              animate={showTapAnim ? { 
+                y: -650, 
+                x: 0,
+                rotate: -15,
+                scale: 1.1,
+                opacity: 1
+              } : { 
+                y: 100,
+                x: -50,
+                rotate: 20,
+                scale: 1,
+                opacity: 0
+              }}
+              transition={{ 
+                duration: 0.6, 
+                type: "spring",
+                stiffness: 100 
+              }}
+              className="absolute bottom-[-50px] right-[-20px] z-20 w-56 h-36 bg-black rounded-2xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center justify-center p-6"
+            >
+               <img src="https://i.ibb.co/zWKnJsFS/Tap-Nix-Logo-2.png" alt="Logo" className="w-12 h-12 object-contain" />
+               <div className="absolute bottom-4 right-6 w-12 h-12 bg-white/5 rounded-full border border-white/10 flex items-center justify-center">
+                  <div className="w-6 h-6 border-2 border-white/40 rounded-full flex items-center justify-center text-[8px] font-black italic">NFC</div>
+               </div>
+               
+               {/* Hand Grip Visual */}
+               <div className="absolute -bottom-10 -right-10 w-32 h-40 bg-zinc-800/80 rounded-[2rem] blur-xl"></div>
             </motion.div>
           </div>
         </div>
