@@ -483,9 +483,9 @@ const Dashboard: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
           <div className="flex items-center gap-4">
-             <div className="w-14 h-14 bg-transparent rounded-2xl flex items-center justify-center">
+             <Link to="/" className="w-14 h-14 bg-transparent rounded-2xl flex items-center justify-center hover:scale-105 transition-transform">
                 <img src="https://i.ibb.co/zWKnJsFS/Tap-Nix-Logo-2.png" alt="TapNix Logo" className="w-14 h-14 object-contain" />
-             </div>
+             </Link>
              <div>
                 <div className="flex items-center gap-3">
                    <h1 className="text-3xl font-black tracking-tight">Tap<span className="text-yellow-400">Nix</span> Terminal</h1>
