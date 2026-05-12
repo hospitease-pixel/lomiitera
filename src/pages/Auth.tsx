@@ -58,8 +58,19 @@ const Auth: React.FC = () => {
         setError('Firebase Error: Please enable "Email/Password" in your Firebase Auth Console.');
       } else if (err.code === 'auth/unauthorized-domain') {
         setError('Firebase Error: Please add this domain to "Authorized Domains" in your Firebase Auth Settings.');
+      } else if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
+        setError('email/password is not correct');
+      } else if (err.code === 'auth/user-not-found') {
+        setError('there is no account in that email account created. create account before sign in');
+      } else if (err.code === 'auth/email-already-in-use') {
+        setError('An account with this email already exists. Please sign in or use another email.');
       } else {
-        setError(err.message);
+        // Fallback for user not found if generic credential error occurs
+        if (err.message?.includes('auth/user-not-found')) {
+           setError('there is no account in that email account created. create account before sign in');
+        } else {
+           setError(err.message?.replace('Firebase: ', ''));
+        }
       }
     } finally {
       setLoading(false);
@@ -96,8 +107,10 @@ const Auth: React.FC = () => {
         setError('Sign-in failed: Browser blocked the popup. Please allow popups for this site.');
       } else if (err.code === 'auth/unauthorized-domain') {
         setError('Firebase Error: Please add this domain to "Authorized Domains" in your Firebase Auth Settings.');
+      } else if (err.code === 'auth/popup-closed-by-user') {
+        setError('Sign-in cancelled. Please complete the process in the popup window.');
       } else {
-        setError(err.message);
+        setError(err.message?.replace('Firebase: ', ''));
       }
     }
   };
@@ -118,9 +131,9 @@ const Auth: React.FC = () => {
           >
             <X className="w-5 h-5" />
           </Link>
-          <div className="w-16 h-16 bg-transparent rounded-2xl flex items-center justify-center mb-6">
+          <Link to="/" className="w-16 h-16 bg-transparent rounded-2xl flex items-center justify-center mb-6 hover:scale-105 transition-transform">
             <img src="https://i.ibb.co/zWKnJsFS/Tap-Nix-Logo-2.png" alt="TapNix Logo" className="w-16 h-16 object-contain" />
-          </div>
+          </Link>
           <h1 className="text-3xl font-black">{isLogin ? 'Welcome Back' : 'Join TapNix'}</h1>
           <p className="text-white/40 font-medium mt-2">Professional NFC Networking.</p>
         </div>
