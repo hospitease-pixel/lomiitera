@@ -115,7 +115,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
       {/* Background/Header Area */}
       {layout === 'standard' && (
         <div 
-          className="absolute top-0 left-0 right-0 h-40 sm:h-64 -mt-2 -mx-1 rounded-t-[1.5rem] overflow-hidden"
+          className="absolute top-0 left-0 right-0 h-60 sm:h-64 -mt-2 -mx-1 rounded-t-[1.5rem] overflow-hidden"
           style={{ backgroundColor: card.logoType === 'color' ? card.logoColor : colors.coverBg }}
         >
           <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center p-4">
@@ -154,7 +154,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
       {/* Main Content Area */}
       <div className={cn(
         "relative z-10 transition-all duration-700",
-        layout === 'standard' ? "pt-24 sm:pt-40" : isMinimal ? "pt-6 sm:pt-10" : "pt-16 sm:pt-24"
+        layout === 'standard' ? "pt-44 sm:pt-40" : isMinimal ? "pt-6 sm:pt-10" : "pt-16 sm:pt-24"
       )}>
         
         {/* Profile Image & Header Selection */}
@@ -239,7 +239,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
               src={card.logo} 
               alt="Logo" 
               className={cn(
-                "h-8 object-contain transition-all",
+                "h-12 sm:h-8 object-contain transition-all",
                 isGlass && "opacity-80"
               )} 
             />
@@ -294,7 +294,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
               }}
             >
               <Phone className="w-4 h-4 sm:w-5 sm:h-5 mr-3 shrink-0" />
-              <div className="flex items-center text-[10px] sm:text-xs font-black tracking-widest uppercase">
+              <div className="flex items-center text-[10px] sm:text-xs font-bold uppercase">
                 Call: <span className="ml-2 font-bold normal-case tracking-normal opacity-90">{phone.value}</span>
               </div>
             </motion.a>
@@ -316,7 +316,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
               }}
             >
               <Mail className="w-4 h-4 sm:w-5 sm:h-5 mr-3 shrink-0" />
-              <div className="flex items-center text-[10px] sm:text-xs font-black tracking-widest uppercase">
+              <div className="flex items-center text-[10px] sm:text-xs font-bold uppercase">
                 Email: <span className="ml-2 font-bold normal-case tracking-normal opacity-90 truncate max-w-[180px]">{email.value}</span>
               </div>
             </motion.a>
@@ -341,7 +341,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm border transition-all"
+              className="flex items-center px-4 py-2.5 rounded-xl text-[10px] font-bold uppercase shadow-sm border transition-all"
               style={{ 
                 backgroundColor: isGlass ? 'rgba(255,255,255,0.05)' : colors.utilBtn, 
                 color: isGlass ? '#ffffff' : colors.utilBtnText, 
