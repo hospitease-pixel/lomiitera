@@ -18,7 +18,8 @@ import {
   FileText,
   MapPin,
   Link as LinkIcon,
-  Download
+  Download,
+  Mic
 } from 'lucide-react';
 import { auth, db, storage } from '../firebase';
 import { sendEmailVerification } from 'firebase/auth';
@@ -610,6 +611,21 @@ const Editor: React.FC = () => {
                            ))}
                          </div>
                        )}
+
+                       <div className="pt-6 border-t border-white/5 space-y-4">
+                          <InputField label="Voice Note Link (Vocaroo)" value={card.voiceNote || ''} onChange={v => updateField('voiceNote', v)} />
+                          <div className="px-1">
+                            <a 
+                              href="https://vocaroo.com/" 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="text-[10px] font-black text-yellow-400 hover:text-yellow-300 transition-colors flex items-center gap-1 uppercase tracking-wider"
+                            >
+                              <Mic size={10} />
+                              Click here to record/upload your voice note
+                            </a>
+                          </div>
+                       </div>
                     </div>
                  </InputGroup>
 
