@@ -1,5 +1,5 @@
 import express from "express";
-import { createServer as createViteServer } from "vite";
+import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -41,21 +41,38 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", env: process.env.NODE_ENV });
 });
 
-// For local development
-if (process.env.NODE_ENV !== "production") {
-  const PORT = 3000;
-  async function setupVite() {
+const PORT = Number(process.env.PORT) || 3000;
+
+function listen() {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on port ${PORT} (${process.env.NODE_ENV || "development"})`);
+  });
+}
+
+async function start() {
+  if (process.env.NODE_ENV === "production") {
+    const distPath = path.join(__dirname, "dist");
+    if (fs.existsSync(distPath)) {
+      app.use(express.static(distPath));
+      app.get("*", (req, res) => {
+        res.sendFile(path.join(distPath, "index.html"));
+      });
+    } else {
+      console.warn(`dist folder not found at ${distPath}; starting without static files. Run "npm run build".`);
+    }
+    listen();
+  } else {
     const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
     });
     app.use(vite.middlewares);
-    app.listen(PORT, "0.0.0.0", () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-    });
+    listen();
   }
-  setupVite();
 }
 
-export default app;
+start().catch((err) => {
+  console.error("Failed to start server:", err);
+  process.exit(1);
+});
